@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+						http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+						http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd
+						
+						http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd">
+	 <context:property-placeholder location="classpath:customer.properties" />
+
+	<bean id="transactionManagerBase"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSourceBase"></property>
+	</bean>
+	<bean id="transactionManagerZhpt"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSourceZhpt"></property>
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManagerBase"
+		proxy-target-class="true" />
+	<tx:annotation-driven transaction-manager="transactionManagerZhpt"
+		proxy-target-class="true" />
+
+
+	<bean id="dataSourceBase" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${dataSourceSYSTEM.driverClass}" />
+		<property name="jdbcUrl" value="${dataSourceSYSTEM.jdbcUrl}" />
+		<property name="user" value="${dataSourceSYSTEM.user}" />
+		<property name="password" value="${dataSourceSYSTEM.password}" />
+		<property name="autoCommitOnClose" value="false" />
+		<property name="checkoutTimeout" value="10000" />
+		<property name="initialPoolSize" value="3" />
+		<property name="minPoolSize" value="1" />
+		<property name="maxPoolSize" value="60" />
+		<property name="maxIdleTime" value="1800" />
+		<property name="acquireIncrement" value="3" />
+	</bean>
+	<bean id="sessionFactoryBase"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSourceBase" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					${dataSourceSYSTEM.dialect}
+				</prop>
+				<!-- <prop key="hibernate.format_sql">true</prop> -->
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<!-- <prop key="hibernate.cache.use_second_level_cache">true</prop>设置缓存机制为二级缓存 
+					<prop key="hibernate.cache.use_query_cache">true</prop>启动查询缓存 <prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop> 
+					<prop key="hibernate.cache.provider_configuration_file_resource_path">classpath:/config/ehcache.xml</prop> 
+					设置缓存的配置文件路径 -->
+			</props>
+		</property>
+
+		<property name="packagesToScan">
+			<list>
+			</list>
+		</property>
+
+	</bean>
+	<!-- 这个是综合平台的数据库配置  -->
+	<bean id="dataSourceZhpt" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${dataSourceZhpt.driverClass}" />
+		<property name="jdbcUrl" value="${dataSourceZhpt.jdbcUrl}" />
+		<property name="user" value="${dataSourceZhpt.user}" />
+		<property name="password" value="${dataSourceZhpt.password}" />
+		<property name="autoCommitOnClose" value="false" />
+		<property name="checkoutTimeout" value="10000" />
+		<property name="initialPoolSize" value="3" />
+		<property name="minPoolSize" value="1" />
+		<property name="maxPoolSize" value="60" />
+		<property name="maxIdleTime" value="1800" />
+		<property name="acquireIncrement" value="3" />
+	</bean>
+	<bean id="sessionFactoryZhpt"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSourceZhpt" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					${dataSourceZhpt.dialect}
+				</prop>
+				<!-- <prop key="hibernate.format_sql">true</prop> -->
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<!-- <prop key="hibernate.cache.use_second_level_cache">true</prop>设置缓存机制为二级缓存 
+					<prop key="hibernate.cache.use_query_cache">true</prop>启动查询缓存 <prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop> 
+					<prop key="hibernate.cache.provider_configuration_file_resource_path">classpath:/config/ehcache.xml</prop> 
+					设置缓存的配置文件路径 -->
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="transactionManagerLog" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
+	<property name="dataSource" ref="dataSourceLog"></property>
+</bean>
+<tx:annotation-driven transaction-manager="transactionManagerLog" proxy-target-class="true"/>
+
+
+
+	<bean id="dataSourceLog" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${dataSourceLog.driverClass}" />
+		<property name="jdbcUrl" value="${dataSourceLog.jdbcUrl}" />
+		<property name="user" value="${dataSourceLog.user}" />
+		<property name="password" value="${dataSourceLog.password}" />
+		<property name="autoCommitOnClose" value="false"/>
+		 <property name="checkoutTimeout" value="10000"/>
+		<property name="initialPoolSize" value="3"/>
+		<property name="minPoolSize" value="1"/>
+		<property name="maxPoolSize" value="60"/>
+		<property name="maxIdleTime" value="1800"/>
+		<property name="acquireIncrement" value="3"/>
+	</bean>
+	<bean id="sessionFactoryLog"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		 <property name="dataSource">
+			<ref bean="dataSourceLog" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					${dataSourceLog.dialect}
+				</prop>
+<!--			 	<prop key="hibernate.format_sql">true</prop> -->
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			<!-- 	<prop key="hibernate.cache.use_second_level_cache">true</prop>设置缓存机制为二级缓存
+				<prop key="hibernate.cache.use_query_cache">true</prop>启动查询缓存
+				<prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop>
+				<prop key="hibernate.cache.provider_configuration_file_resource_path">classpath:/config/ehcache.xml</prop>   设置缓存的配置文件路径 -->
+			</props>
+		</property>
+
+		<property name="packagesToScan"  >
+			<list>
+				<value>com.codezjsos.log.entity</value>
+			</list>
+		</property>
+
+		</bean>
+	<context:component-scan base-package="com.codezjsos.log.*"></context:component-scan>
+
+	<bean id="commonLogService" class="com.codezjsos.base.impl.CommonService">
+		<property name="baseDao" >
+			<bean class="com.codezjsos.base.impl.BaseDaoImpl">
+				<property name="sessionFactory" ref="sessionFactoryLog"></property>
+			</bean>
+		</property>
+		<property name="jdbcTemplate" ref="dataSourceLog"></property>
+	</bean>
+
+
+	<context:component-scan base-package="com.codezjsos.base.*"></context:component-scan>
+
+	<aop:aspectj-autoproxy proxy-target-class="true"></aop:aspectj-autoproxy>
+
+	
+	<bean id="commonService" class="com.codezjsos.base.impl.CommonService">
+		<property name="baseDao" >
+			<bean class="com.codezjsos.base.impl.BaseDaoImpl">
+				<property name="sessionFactory" ref="sessionFactoryBase"></property>
+			</bean>
+		</property>
+		<property name="jdbcTemplate" ref="dataSourceBase"></property>
+	</bean>
+	<bean id="zhptService" class="com.codezjsos.base.impl.CommonService">
+		<property name="baseDao" >
+			<bean class="com.codezjsos.base.impl.BaseDaoImpl">
+				<property name="sessionFactory" ref="sessionFactoryZhpt"></property>
+			</bean>
+		</property>
+		<property name="jdbcTemplate" ref="dataSourceZhpt"></property>
+	</bean>
+	<!-- 定时触发 start-->
+	
+	    <bean id="historyJobMethod" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+	    <property name="targetObject" ref="historyJob">  
+	        
+	    </property>  
+	    <property name="targetMethod">  <!-- 要执行的方法名称 -->  
+	        <value>execute</value>  
+	    </property>  
+	</bean>  
+	  
+	<!-- ======================== 调度触发器 ======================== -->  
+	<bean id="historyLogServiceCron" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+	    <property name="jobDetail" ref="historyJobMethod"></property>  
+	    <property name="cronExpression" value="0 0 1 * * ?"></property>   
+	</bean>  
+	
+	
+	
+	    <bean id="todayJobMethod" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+	    <property name="targetObject" ref="todayJob">   
+	    </property>  
+	    <property name="targetMethod">  <!-- 要执行的方法名称 -->  
+	        <value>execute</value>  
+	    </property>  
+	</bean>  
+	  
+	<!-- ======================== 调度触发器 ======================== -->  
+	<bean id="todayLogServiceCron" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+	    <property name="jobDetail" ref="todayJobMethod"></property>  
+	    <property name="cronExpression" value="0 0/10 * * * ?"></property>  
+	</bean>  
+	  
+	<!-- ======================== 调度工厂 ======================== -->  
+	
+	<bean id="springJobSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">  
+	    <property name="triggers">  
+	        <list>  
+	            <ref bean="historyLogServiceCron"/>  
+	            <ref bean="todayLogServiceCron"/>  
+	        </list>  
+	    </property>  
+	</bean> 
+	<!-- 定时触发 end-->
+</beans> 

@@ -1,0 +1,45 @@
+<config>
+	<additions>
+		<addition id="yestoday" type=" and p.createtime =:yestoday "/>
+		<addition id="today" type=" and date(p.createtime) =:today "/>
+		<addition id="start" type=" and date(p.createtime) &gt;=:start "/>
+		<addition id="end" type=" and date(p.createtime) &lt;=:end "/>
+		<addition id="history" type=" and p.createtime &lt;=:history "/>
+		<addition id="middel" type=" and p.createtime " contain="between" />
+		<addition id="bloods" type=" and p.bloodKinshipId in (:bloods)" />
+		<addition id="bloodKinshipId" type=" and p.bloodKinshipId = :bloodKinshipId "/>
+	</additions>
+	
+	<log id="queryLog" group=" group by p.bloodKinshipId,p.saveType ">
+		<!-- select count(*) from tracklog_kt_entity p  where 1=1 -->
+		select new map(p.bloodKinshipId as bloodKinshipId,p.saveType as saveType, count(*) as count ) from TrackLogKtEntity p where 1=1
+	</log>
+	<log id="blooddic" order=" order by LPAD(p.sort,6,0) ">
+		<!-- select count(*) from tracklog_kt_entity p  where 1=1 -->
+		select systemName as comment ,unid as bloodkinshipid,module as moduleComment from z_bloodkinship p where 1=1 
+	</log>
+	
+	<!--
+		private Long collectcelday=0L;//采集
+	
+	private Long ktcelday=0L;//kt
+	
+	private Long importcelday=0L;//导入
+	
+	private Long reportcelday=0L ;//上报
+	  -->
+	  <!--查询历史每天的记录  根据血缘分类-->
+	<log id="queryDayRecorded" group=" group by p.bloodKinshipId ">
+		<!-- select count(*) from tracklog_kt_entity p  where 1=1 -->
+		select new map(p.bloodKinshipId as bloodKinshipId,sum(p.collectcelday) as collectcelday,sum(p.ktcelday) as ktcelday,sum(p.importcelday) as importcelday,sum(p.reportcelday) as reportcelday ) from HistoryLogStatistics p where 1=1
+	</log>
+	  <!--查询历史每天的记录  根据血缘分类根据时间-->
+	<log id="queryDayRecordedForCreatetime" group=" group by p.createtime " order="order by p.createtime">
+		<!-- select count(*) from tracklog_kt_entity p  where 1=1 -->
+		select new map(p.createtime as createtime,sum(p.collectcelday) as collectcelday,sum(p.ktcelday) as ktcelday,sum(p.importcelday) as importcelday,sum(p.reportcelday) as reportcelday ) from HistoryLogStatistics p where 1=1
+	</log>
+	<log id="queryAllRecorded" >
+		<!-- select count(*) from tracklog_kt_entity p  where 1=1 -->
+		select new map(sum(p.collectcelday) as collectcelday,sum(p.ktcelday) as ktcelday,sum(p.importcelday) as importcelday,sum(p.reportcelday) as reportcelday ) from HistoryLogStatistics p where 1=1
+	</log>
+</config>

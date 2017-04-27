@@ -1,0 +1,18 @@
+<config>
+	<additions>
+		<addition id="today" type=" and p.createtime &gt;=:today "/>
+		<addition id="history" type=" and p.createtime &lt;=:history "/>
+		<addition id="middel" type=" and p.createtime " contain="between" />
+		<addition id="bloodKinid" type=" and p.bloodKinid = :bloodKinid "/>
+		<addition id="saveType" type=" and p.saveType like :saveType " conver="%placeholder%"/>
+	</additions>
+	
+	<log id="queryLog" 
+	<log id="queryAllLog" >
+		<!-- select count(*) from tracklog_kt_entity p  where 1=1 -->
+		select count(*) from TrackLogKtEntity p where 1=1
+	</log>>
+		<!-- select count(*) from tracklog_kt_entity p  where 1=1 -->
+		select p count(*) from TrackLogKtEntity p where 1=1
+	</log>
+</config>
